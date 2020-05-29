@@ -100,26 +100,7 @@ exports.addUserDetails = (req, res) => {
     });
 };
 
-/*
-//Get own user details
-exports.getAuthenticatedUser = (req, res) => {
-  let userData = {};
-  db.doc(`/users/${req.user.handle}`).get()
-    .then(doc => {
-      if (doc.exists) {
-        userData.firstName = doc.data();
-        return db
-          .collection("users")
-          .where("userHandle", "==", req.user.handle)	
-          .get();
-      }
-    })
-    .catch((err) => {
-      console.error(err);
-      return res.status(500).json({ error: err.code });
-    });
-};
-*/
+
 // Get own user details
 exports.getAuthenticatedUser = (req, res) => {
   let userData = {};
@@ -156,9 +137,8 @@ exports.uploadImage = (req, res) => {
     if (mimetype !== "image/jpeg" && mimetype !== "image/png") {
       return res.status(400).json({ error: "Wrong file type submitted" });
     }
-    // my.image.png => ['my', 'image', 'png']
     const imageExtension = filename.split(".")[filename.split(".").length - 1];
-    // 32756238461724837.png
+
     imageFileName = `${Math.round(
       Math.random() * 1000000000000
     ).toString()}.${imageExtension}`;
@@ -179,7 +159,6 @@ exports.uploadImage = (req, res) => {
         }
       })
       .then(() => {
-        // Append token to url
         const imageUrl = `https://firebasestorage.googleapis.com/v0/b/${config.storageBucket}/o/${imageFileName}?alt=media`;
         return db.doc(`/users/${req.user.handle}`).update({ imageUrl });
       })
